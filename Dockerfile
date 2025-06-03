@@ -1,4 +1,4 @@
-ARG APP_PATH=/opt/outline
+RG APP_PATH=/opt/outlineMore actions
 ARG BASE_IMAGE=outlinewiki/outline-base
 FROM ${BASE_IMAGE} AS base
 
@@ -40,19 +40,9 @@ RUN mkdir -p "$FILE_STORAGE_LOCAL_ROOT_DIR" && \
 
 VOLUME /var/lib/outline/data
 
-USER root
-
-RUN apt-get update && \
-    apt-get install -y unzip curl python3 && \
-    curl -o amazon-ssm-agent.deb https://s3.amazonaws.com/amazon-ssm-us-east-1/latest/debian_amd64/amazon-ssm-agent.deb && \
-    dpkg -i amazon-ssm-agent.deb && \
-    rm -f amazon-ssm-agent.deb
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+USER nodejs
 
 HEALTHCHECK --interval=1m CMD wget -qO- "http://localhost:${PORT:-3000}/_health" | grep -q "OK" || exit 1
 
 EXPOSE 3000
-
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["yarn", "start"]
