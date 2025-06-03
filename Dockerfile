@@ -40,6 +40,18 @@ RUN mkdir -p "$FILE_STORAGE_LOCAL_ROOT_DIR" && \
 
 VOLUME /var/lib/outline/data
 
+USER root
+
+RUN apt-get update && \
+    apt-get install -y unzip curl python3 && \
+    curl "https://s3.amazonaws.com/amazon-ssm-us-gov-west-1/ssm-agent-manifest.json" -o ssm-agent-manifest.json && \
+    AGENT_URL=$(curl -s https://s3.amazonaws.com/amazon-ssm-us-gov-west-1/ssm-agent-manifest.json | grep -o 'https.*ssm-agent.*linux_amd64\.deb' | head -n1) && \
+    curl "$AGENT_URL" -o ssm-agent.deb && \
+    dpkg -i ssm-agent.deb && \
+    rm -f ssm-agent*
+
+RUN systemctl enable amazon-ssm-agent || true
+
 USER nodejs
 
 HEALTHCHECK --interval=1m CMD wget -qO- "http://localhost:${PORT:-3000}/_health" | grep -q "OK" || exit 1
