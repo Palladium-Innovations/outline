@@ -1,4 +1,4 @@
-RG APP_PATH=/opt/outlineMore actions
+ARG APP_PATH=/opt/outline
 ARG BASE_IMAGE=outlinewiki/outline-base
 FROM ${BASE_IMAGE} AS base
 
