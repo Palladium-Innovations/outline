@@ -48,7 +48,8 @@ RUN apt-get update && \
     dpkg -i amazon-ssm-agent.deb && \
     rm -f amazon-ssm-agent.deb
 
-RUN systemctl enable amazon-ssm-agent || true
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 USER nodejs
 
@@ -56,6 +57,4 @@ HEALTHCHECK --interval=1m CMD wget -qO- "http://localhost:${PORT:-3000}/_health"
 
 EXPOSE 3000
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
