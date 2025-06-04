@@ -5,7 +5,7 @@ FROM ${BASE_IMAGE} AS base
 ARG APP_PATH
 WORKDIR $APP_PATH
 
-FROM registry.access.redhat.com/ubi9-minimal AS runner
+FROM registry.access.redhat.com/ubi9 AS runner
 
 LABEL org.opencontainers.image.source="https://github.com/outline/outline"
 
@@ -14,7 +14,8 @@ ENV APP_PATH=$APP_PATH
 WORKDIR $APP_PATH
 ENV NODE_ENV=production
 
-RUN microdnf install -y curl tar gzip shadow-utils findutils wget && \
+RUN microdnf remove -y curl-minimal && \
+    microdnf install -y curl tar gzip shadow-utils findutils wget && \
     curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
     microdnf install -y nodejs && \
     microdnf clean all
