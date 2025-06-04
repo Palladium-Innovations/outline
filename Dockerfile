@@ -14,8 +14,7 @@ ENV APP_PATH=$APP_PATH
 WORKDIR $APP_PATH
 ENV NODE_ENV=production
 
-RUN dnf remove -y curl-minimal && \
-    dnf install -y curl tar gzip shadow-utils findutils wget && \
+RUN dnf install -y curl tar gzip shadow-utils findutils wget && \
     curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
     dnf install -y nodejs && \
     dnf clean all
